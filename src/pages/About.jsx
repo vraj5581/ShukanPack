@@ -17,7 +17,7 @@ function About() {
             <div className="text-content fade-in delay-200">
               <h2 className="about-heading">More Than Just a Box</h2>
               <p className="about-text">
-                At ImperialPack, we believe packaging is the physical embodiment
+                At ShukanPack, we believe packaging is the physical embodiment
                 of your brand. It's the first touchpoint a customer has with
                 your product, and it should be memorable.
               </p>

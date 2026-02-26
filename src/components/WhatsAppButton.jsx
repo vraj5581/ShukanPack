@@ -4,7 +4,7 @@ import "../styles/whatsapp.css";
 const WhatsAppButton = () => {
   const phoneNumber = "917016516703"; // Country code + Number from user context
   const message =
-    "Hello,\nI connected from the ImperialPack website.\nI would like to know more about ImperialPack services.";
+    "Hello,\nI connected from the ShukanPack website.\nI would like to know more about ShukanPack services.";
 
   return (
     <a

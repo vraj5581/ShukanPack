@@ -28,7 +28,7 @@ function Navbar() {
     <nav className={navClass}>
       <div className="nav-container">
         <Link to="/" className="logo">
-          ImperialPack<span className="dot">.</span>
+          ShukanPack<span className="dot">.</span>
         </Link>
 
         {/* Mobile Toggle */}

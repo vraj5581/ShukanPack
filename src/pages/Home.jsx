@@ -15,7 +15,7 @@ function Home() {
               <span className="text-gradient">Custom Packaging</span>
             </h1>
             <p>
-              ImperialPack creates high-quality, sustainable, and custom-designed
+              ShukanPack creates high-quality, sustainable, and custom-designed
               packaging that tells your brand's unique story.
             </p>
 
@@ -33,7 +33,7 @@ function Home() {
             {/* Abstract Box Representation */}
             <div className="floating-box">
               <div className="box-face front">
-                <div className="box-logo">IM</div>
+                <div className="box-logo">SP</div>
               </div>
               <div className="box-face top"></div>
               <div className="box-face right"></div>
@@ -65,7 +65,7 @@ function Home() {
       <section className="section features">
         <div className="container">
           <div className="section-header text-center mb-8">
-            <h2>Why Choose ImperialPack?</h2>
+            <h2>Why Choose ShukanPack?</h2>
             <p>We deliver perfection in every package.</p>
           </div>
 
@@ -133,7 +133,7 @@ function Home() {
       <section className="cta-section">
         <div className="container cta-content fade-in">
           <h2>Ready to Transform Your Packaging?</h2>
-          <p>Join hundreds of brands that trust ImperialPack.</p>
+          <p>Join hundreds of brands that trust ShukanPack.</p>
           <Link to="/contact" className="primary-btn white-btn">
             Start Your Project
           </Link>

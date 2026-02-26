@@ -7,7 +7,7 @@ function Footer() {
       <div className="container footer-container">
         <div className="footer-brand">
           <Link to="/" className="footer-logo">
-            ImperialPack<span className="dot">.</span>
+            ShukanPack<span className="dot">.</span>
           </Link>
           <p>
             Premium packaging solutions for modern brands. We help your product
@@ -93,7 +93,7 @@ function Footer() {
 
       <div className="footer-bottom">
         <p>
-          &copy; {new Date().getFullYear()} ImperialPack. All rights reserved.
+          &copy; {new Date().getFullYear()} ShukanPack. All rights reserved.
         </p>
       </div>
     </footer>

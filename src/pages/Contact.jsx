@@ -74,8 +74,8 @@ function Contact() {
                   <div className="icon-circle">📧</div>
                   <div className="info-text">
                     <label>Email Us</label>
-                    <a href="mailto:vraj@imperialpack.com">
-                      vraj@imperialpack.com
+                    <a href="mailto:vraj@shukanpack.com">
+                      vraj@shukanpack.com
                     </a>
                   </div>
                 </div>
