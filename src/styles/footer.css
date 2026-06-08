@@ -20,10 +20,32 @@
 }
 
 .footer-logo {
-  font-size: 24px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.footer-logo-img {
+  height: 40px;
+  width: auto;
+  border-radius: 6px;
+  background: white;
+  padding: 2px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.footer-logo .logo-text {
+  font-size: 20px;
   font-weight: 800;
-  color: white;
-  display: inline-block;
+  font-family: var(--font-heading);
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.footer-logo .logo-text-accent {
+  color: var(--accent-color);
 }
 
 .footer h4 {

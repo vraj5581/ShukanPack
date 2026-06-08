@@ -7,7 +7,14 @@ function Footer() {
       <div className="container footer-container">
         <div className="footer-brand">
           <Link to="/" className="footer-logo">
-            ShukanPack<span className="dot">.</span>
+            <img 
+              src={`${import.meta.env.BASE_URL || "/"}logo.jpg`} 
+              alt="Shukan Packaging Logo" 
+              className="footer-logo-img" 
+            />
+            <span className="logo-text">
+              Shukan<span className="logo-text-accent">Packaging</span>
+            </span>
           </Link>
           <p>
             Premium packaging solutions for modern brands. We help your product

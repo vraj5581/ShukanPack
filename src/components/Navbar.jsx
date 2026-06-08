@@ -28,7 +28,14 @@ function Navbar() {
     <nav className={navClass}>
       <div className="nav-container">
         <Link to="/" className="logo">
-          ShukanPack<span className="dot">.</span>
+          <img 
+            src={`${import.meta.env.BASE_URL || "/"}logo.jpg`} 
+            alt="Shukan Packaging Logo" 
+            className="navbar-logo" 
+          />
+          <span className="logo-text">
+            Shukan<span className="logo-text-accent">Packaging</span>
+          </span>
         </Link>
 
         {/* Mobile Toggle */}

@@ -1,16 +1,18 @@
 :root {
-  --primary-color: #2563eb;
-  --primary-hover: #1e40af;
-  --secondary-color: #1f2937;
-  --accent-color: #3b82f6;
-  --background-light: #f9fafb;
-  --background-dark: #111827;
-  --text-main: #1f2937;
-  --text-light: #4b5563; /* Darker grey for better readability */
+  --primary-color: #0a2d54;     /* Deep Navy Blue from logo */
+  --primary-hover: #061d36;     /* Darker Navy for hover */
+  --secondary-color: #0076a8;   /* Vibrant Ocean Blue from logo */
+  --secondary-hover: #005f87;   /* Darker Ocean Blue for hover */
+  --accent-color: #c59b6c;      /* Premium Gold/Bronze from logo */
+  --accent-hover: #b08453;      /* Darker Gold/Bronze for hover */
+  --background-light: #f8fafc;
+  --background-dark: #071324;   /* Dark Navy-Black for premium contrast */
+  --text-main: #0a2d54;         /* Use dark navy for main text */
+  --text-light: #475569;        /* Slate gray for body paragraphs */
   --white: #ffffff;
   --font-heading: "Outfit", sans-serif;
   --font-body: "Inter", sans-serif;
-  --transition-speed: 0.3s;
+  --transition-speed: 0.35s;
 }
 
 * {

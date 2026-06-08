@@ -64,7 +64,7 @@ function Globe({ data }) {
         <Line
           key={i}
           points={points}
-          color="#3b82f6" // Distinct blue
+          color="#0076a8" // Brand ocean blue
           lineWidth={1.5} // Slightly thicker lines for visibility
           transparent
           opacity={0.6} // More opaque

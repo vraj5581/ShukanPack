@@ -33,7 +33,11 @@ function Home() {
             {/* Abstract Box Representation */}
             <div className="floating-box">
               <div className="box-face front">
-                <div className="box-logo">SP</div>
+                <img 
+                  src={`${import.meta.env.BASE_URL || "/"}logo.jpg`} 
+                  alt="Shukan Packaging" 
+                  className="box-logo-img" 
+                />
               </div>
               <div className="box-face top"></div>
               <div className="box-face right"></div>
