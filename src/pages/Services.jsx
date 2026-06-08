@@ -93,7 +93,7 @@ function Services() {
               key={index}
             >
               <div className="icon-box">{service.icon}</div>
-              <h3>{service.title}x </h3>
+              <h3>{service.title}</h3>
               <p>{service.description}</p>
             </div>
           ))}

@@ -26,20 +26,45 @@
 }
 
 .logo {
-  font-size: 24px;
-  font-weight: 800;
-  color: #fff;
   text-decoration: none;
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
-.navbar.scrolled .logo {
-  color: var(--secondary-color);
+.navbar-logo {
+  height: 45px;
+  width: auto;
+  border-radius: 8px;
+  background: white;
+  padding: 3px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
 }
 
-.dot {
+.logo:hover .navbar-logo {
+  transform: scale(1.05);
+}
+
+.logo-text {
+  font-size: 22px;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  transition: color var(--transition-speed) ease;
+}
+
+.navbar.scrolled .logo-text {
   color: var(--primary-color);
+}
+
+.logo-text-accent {
+  color: var(--accent-color);
+}
+
+.navbar.scrolled .logo-text-accent {
+  color: var(--secondary-color);
 }
 
 .mobile-toggle {
