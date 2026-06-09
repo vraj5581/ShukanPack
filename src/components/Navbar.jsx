@@ -88,18 +88,18 @@ function Navbar() {
             Services
           </Link>
           <Link
+            to="/products"
+            className={location.pathname === "/products" ? "active" : ""}
+          >
+            Products
+          </Link>
+          <Link
             to="/about"
             className={location.pathname === "/about" ? "active" : ""}
           >
             About
           </Link>
-          <Link
-            to="/contact"
-            className={location.pathname === "/contact" ? "active" : ""}
-          >
-            Contact
-          </Link>
-          <Link to="/services" className="nav-cta">
+          <Link to="/contact" className="nav-cta">
             Get Started
           </Link>
         </div>

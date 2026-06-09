@@ -139,13 +139,13 @@
     position: fixed;
     top: 0;
     right: 0;
-    width: 280px; /* Wider menu for better touch targets */
-    max-width: 80vw;
+    width: 200px; /* Further reduced width */
+    max-width: 50vw; /* Further reduced max-width */
     height: 100vh;
     background: white;
     flex-direction: column;
     align-items: flex-start;
-    padding: 80px 25px 30px; /* More breathing room */
+    padding: 60px 15px 15px; /* Tighter padding */
     transform: translateX(100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: -5px 0 20px rgba(0, 0, 0, 0.15);
@@ -158,10 +158,10 @@
 
   .nav-links a {
     color: var(--secondary-color);
-    font-size: 18px; /* Larger font for mobile links */
+    font-size: 15px; /* Tighter font size */
     font-weight: 600;
     width: 100%;
-    padding: 15px 0; /* Larger touch target */
+    padding: 10px 0; /* Tighter spacing */
     border-bottom: 1px solid #f3f4f6;
     display: block;
   }
@@ -187,7 +187,7 @@
   }
 
   .nav-cta {
-    margin-top: 25px;
+    margin-top: 12px; /* Tighter top margin */
     text-align: center;
     width: 100%;
   }

@@ -122,6 +122,8 @@ function Admin() {
     const today = new Date().toDateString();
     return new Date(m.date).toDateString() === today;
   }).length;
+  const totalQuotes = messages.filter(m => m.message && m.message.includes("Product Quote Request:")).length;
+  const generalInquiries = totalMessages - totalQuotes;
 
   if (isAuthChecking) {
       return (
@@ -285,18 +287,29 @@ function Admin() {
                         <div className="stat-icon blue">📬</div>
                         <div className="stat-info">
                             <h3>{totalMessages}</h3>
-                            <p>Total Messages</p>
+                            <p>Total Inquiries</p>
                         </div>
                     </div>
-                    <div className="stat-card green">🆕</div>
-                    <div className="stat-info">
-                        <h3>{unreadMessages}</h3>
-                        <p>Unread Messages</p>
+                    <div className="stat-card">
+                        <div className="stat-icon orange">📦</div>
+                        <div className="stat-info">
+                            <h3>{totalQuotes}</h3>
+                            <p>Product Quotes</p>
+                        </div>
                     </div>
-                    <div className="stat-card purple">📅</div>
-                    <div className="stat-info">
-                        <h3>{todayMessages}</h3>
-                        <p>Received Today</p>
+                    <div className="stat-card">
+                        <div className="stat-icon teal">💬</div>
+                        <div className="stat-info">
+                            <h3>{generalInquiries}</h3>
+                            <p>General Queries</p>
+                        </div>
+                    </div>
+                    <div className="stat-card">
+                        <div className="stat-icon purple">🆕</div>
+                        <div className="stat-info">
+                            <h3>{unreadMessages}</h3>
+                            <p>Unread Messages</p>
+                        </div>
                     </div>
                 </div>
 
@@ -315,6 +328,7 @@ function Admin() {
                         <table className="messages-table">
                             <thead>
                                 <tr>
+                                    <th>Type</th>
                                     <th>Status</th>
                                     <th>Name</th>
                                     <th>Email</th>
@@ -323,23 +337,31 @@ function Admin() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {messages.slice(0, 5).map((msg) => (
-                                    <tr key={msg.id} onClick={() => viewMessage(msg)} style={{cursor: 'pointer'}}>
-                                        <td>
-                                            <span className={`status-badge ${msg.status === 'unread' ? 'unread' : 'read'}`}>
-                                                {msg.status === 'unread' ? 'New' : 'Read'}
-                                            </span>
-                                        </td>
-                                        <td><strong>{msg.name}</strong></td>
-                                        <td>{msg.email}</td>
-                                        <td>{new Date(msg.date).toLocaleDateString()}</td>
-                                        <td>
-                                            <div className="action-buttons">
-                                                <button className="action-btn btn-view" onClick={(e) => { e.stopPropagation(); viewMessage(msg); }}>View</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {messages.slice(0, 5).map((msg) => {
+                                    const isQuote = msg.message && msg.message.includes("Product Quote Request:");
+                                    return (
+                                        <tr key={msg.id} onClick={() => viewMessage(msg)} style={{cursor: 'pointer'}}>
+                                            <td>
+                                                <span className={`type-badge ${isQuote ? 'quote' : 'contact'}`}>
+                                                    {isQuote ? '📦 Quote' : '💬 Query'}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span className={`status-badge ${msg.status === 'unread' ? 'unread' : 'read'}`}>
+                                                    {msg.status === 'unread' ? 'New' : 'Read'}
+                                                </span>
+                                            </td>
+                                            <td><strong>{msg.name}</strong></td>
+                                            <td>{msg.email}</td>
+                                            <td>{new Date(msg.date).toLocaleDateString()}</td>
+                                            <td>
+                                                <div className="action-buttons">
+                                                    <button className="action-btn btn-view" onClick={(e) => { e.stopPropagation(); viewMessage(msg); }}>View</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                                 {messages.length === 0 && (
                                     <tr>
                                         <td colSpan="5" style={{textAlign: 'center', padding: '40px', color: '#94a3b8'}}>
@@ -362,8 +384,11 @@ function Admin() {
                         <button 
                             onClick={() => {
                                 const csvContent = "data:text/csv;charset=utf-8," 
-                                    + "Date,Name,Email,Message,Status\n"
-                                    + messages.map(e => `${e.date},${e.name},${e.email},"${e.message.replace(/"/g, '""')}",${e.status}`).join("\n");
+                                    + "Date,Type,Name,Email,Message,Status\n"
+                                    + messages.map(e => {
+                                        const type = e.message && e.message.includes("Product Quote Request:") ? "Quote Request" : "General Inquiry";
+                                        return `${e.date},${type},${e.name},${e.email},"${e.message.replace(/"/g, '""')}",${e.status}`;
+                                    }).join("\n");
                                 const encodedUri = encodeURI(csvContent);
                                 const link = document.createElement("a");
                                 link.setAttribute("href", encodedUri);
@@ -389,6 +414,7 @@ function Admin() {
                     <table className="messages-table">
                         <thead>
                             <tr>
+                                <th>Type</th>
                                 <th>Status</th>
                                 <th>Name</th>
                                 <th>Email</th>
@@ -402,24 +428,32 @@ function Admin() {
                                     msg.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                                     msg.email.toLowerCase().includes(searchTerm.toLowerCase())
                                 )
-                                .map((msg) => (
-                                <tr key={msg.id} onClick={() => viewMessage(msg)} style={{cursor: 'pointer'}}>
-                                    <td>
-                                        <span className={`status-badge ${msg.status === 'unread' ? 'unread' : 'read'}`}>
-                                            {msg.status === 'unread' ? 'New' : 'Read'}
-                                        </span>
-                                    </td>
-                                    <td><strong>{msg.name}</strong></td>
-                                    <td>{msg.email}</td>
-                                    <td>{new Date(msg.date).toLocaleString()}</td>
-                                    <td>
-                                        <div className="action-buttons">
-                                            <button className="action-btn btn-view" onClick={(e) => { e.stopPropagation(); viewMessage(msg); }}>View</button>
-                                            <button className="action-btn btn-delete" onClick={(e) => deleteMessage(msg.id, e)}>Delete</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                                .map((msg) => {
+                                    const isQuote = msg.message && msg.message.includes("Product Quote Request:");
+                                    return (
+                                        <tr key={msg.id} onClick={() => viewMessage(msg)} style={{cursor: 'pointer'}}>
+                                            <td>
+                                                <span className={`type-badge ${isQuote ? 'quote' : 'contact'}`}>
+                                                    {isQuote ? '📦 Quote' : '💬 Query'}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span className={`status-badge ${msg.status === 'unread' ? 'unread' : 'read'}`}>
+                                                    {msg.status === 'unread' ? 'New' : 'Read'}
+                                                </span>
+                                            </td>
+                                            <td><strong>{msg.name}</strong></td>
+                                            <td>{msg.email}</td>
+                                            <td>{new Date(msg.date).toLocaleString()}</td>
+                                            <td>
+                                                <div className="action-buttons">
+                                                    <button className="action-btn btn-view" onClick={(e) => { e.stopPropagation(); viewMessage(msg); }}>View</button>
+                                                    <button className="action-btn btn-delete" onClick={(e) => deleteMessage(msg.id, e)}>Delete</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             {messages.length === 0 && (
                                 <tr>
                                     <td colSpan="5" style={{textAlign: 'center', padding: '40px', color: '#94a3b8'}}>

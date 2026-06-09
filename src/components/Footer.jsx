@@ -53,48 +53,48 @@ function Footer() {
               <Link to="/services">Services</Link>
             </li>
             <li>
+              <Link to="/products">Products</Link>
+            </li>
+            <li>
               <Link to="/contact">Contact</Link>
             </li>
-            <li>
-              <Link to="/contact">Press</Link>
-            </li>
           </ul>
         </div>
 
-        <div className="footer-links">
-          <h4>Services</h4>
-          <ul>
+        <div className="footer-contact">
+          <h4>Contact Info</h4>
+          <ul className="contact-details">
             <li>
-              <Link to="/services#custom-packaging">Custom Packaging</Link>
+              <a
+                href="https://www.google.com/maps/search/?api=1&query=New+Ghutu+Road,+Morbi,+Gujarat"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="contact-item"
+              >
+                <svg className="contact-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span>New Ghutu Road, Morbi, Gujarat</span>
+              </a>
             </li>
             <li>
-              <Link to="/services#eco-materials">Eco Materials</Link>
+              <a href="tel:+919998725672" className="contact-item">
+                <svg className="contact-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                </svg>
+                <span>+91 9998725672</span>
+              </a>
             </li>
             <li>
-              <Link to="/services#box-design">Box Design</Link>
-            </li>
-            <li>
-              <Link to="/services#consultation">Consultation</Link>
+              <a href="mailto:shukanpackaging@gmail.com" className="contact-item">
+                <svg className="contact-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span>shukanpackaging@gmail.com</span>
+              </a>
             </li>
           </ul>
-        </div>
-
-        <div className="footer-links newsletter">
-          <h4>Stay Updated</h4>
-          <p>Subscribe to our newsletter for the latest packaging trends.</p>
-          <div className="input-group">
-            <input type="email" placeholder="Enter your email" />
-            <button aria-label="Subscribe">
-              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                />
-              </svg>
-            </button>
-          </div>
         </div>
       </div>
 

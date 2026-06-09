@@ -74,8 +74,8 @@ function Contact() {
                   <div className="icon-circle">📧</div>
                   <div className="info-text">
                     <label>Email Us</label>
-                    <a href="mailto:vraj@shukanpack.com">
-                      vraj@shukanpack.com
+                    <a href="mailto:shukanpackaging@gmail.com">
+                     shukanpackaging@gmail.com
                     </a>
                   </div>
                 </div>
@@ -84,7 +84,7 @@ function Contact() {
                   <div className="icon-circle">📞</div>
                   <div className="info-text">
                     <label>Call Us</label>
-                    <a href="tel:+917016516703">+91 7016516703</a>
+                    <a href="tel:+91 9998725672">+91 9998725672</a>
                   </div>
                 </div>
 
