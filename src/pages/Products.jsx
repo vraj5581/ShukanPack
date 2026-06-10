@@ -16,7 +16,7 @@ function Products() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const products = [
+  const defaultProducts = [
     {
       id: "wc-box",
       title: "Premium Water Closet (WC) Box",
@@ -130,6 +130,19 @@ function Products() {
       },
     },
   ];
+
+  const [products, setProducts] = useState(() => {
+    const saved = localStorage.getItem("shukan_products");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error("Failed to parse shukan_products from localStorage, falling back to default.", e);
+      }
+    }
+    localStorage.setItem("shukan_products", JSON.stringify(defaultProducts));
+    return defaultProducts;
+  });
 
   const filteredProducts = products.filter(
     (p) => filter === "all" || p.category === filter
