@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/pages.css";
+import { API_BASE_URL, getHeaders } from "../apiConfig";
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -24,7 +25,6 @@ function Contact() {
     if (!formData.name) newErrors.name = "Name is required";
     if (!formData.email) newErrors.email = "Email is required";
     else if (!formData.email.includes("@")) newErrors.email = "Invalid email";
-    if (!formData.message) newErrors.message = "Message is required";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -35,23 +35,31 @@ function Contact() {
 
     setIsSubmitting(true);
     
-    // Save to localStorage
     const newSubmission = {
-      id: Date.now(),
       ...formData,
       date: new Date().toISOString(),
       status: 'unread'
     };
 
-    const existingData = JSON.parse(localStorage.getItem('contact_messages') || '[]');
-    localStorage.setItem('contact_messages', JSON.stringify([newSubmission, ...existingData]));
-
-    // Simulate API call delay for UX
-    setTimeout(() => {
-      setSuccess(true);
-      setFormData({ name: "", email: "", message: "" });
-      setIsSubmitting(false);
-    }, 1000);
+    fetch(`${API_BASE_URL}/inquiries.php`, {
+      method: "POST",
+      headers: getHeaders(false),
+      body: JSON.stringify(newSubmission),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to send message");
+        return res.json();
+      })
+      .then(() => {
+        setSuccess(true);
+        setFormData({ name: "", email: "", message: "" });
+        setIsSubmitting(false);
+      })
+      .catch((err) => {
+        console.error("Error submitting contact form:", err);
+        alert("Failed to send your message. Please check your connection or contact us directly via email.");
+        setIsSubmitting(false);
+      });
   };
 
   return (

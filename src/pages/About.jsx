@@ -38,8 +38,8 @@ function About() {
                   <p className="stat-label">Team Members</p>
                 </div>
                 <div>
-                  <h3 className="stat-number">25</h3>
-                  <p className="stat-label">Countries</p>
+                  <h3 className="stat-number">25+</h3>
+                  <p className="stat-label">Clients</p>
                 </div>
               </div>
             </div>
