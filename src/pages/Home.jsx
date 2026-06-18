@@ -1,7 +1,14 @@
 import "../styles/pages.css";
 import { Link } from "react-router-dom";
+import useSEO from "../hooks/useSEO";
 
 function Home() {
+  useSEO({
+    title: "Shukan Packaging | Premium Custom Packaging & Corrugated Box Manufacturer Morbi",
+    description: "Shukan Packaging in Morbi, Gujarat manufactures high-quality custom corrugated boxes, sheets, and custom packaging solutions for sanitaryware, tiles, agriculture, and shipping.",
+    keywords: "corrugated boxes, custom packaging, packaging box manufacturer, Morbi packaging, sanitaryware boxes, shipping boxes, Gujarat packaging",
+  });
+
   return (
     <div className="home-wrapper">
       {/* Hero Section */}

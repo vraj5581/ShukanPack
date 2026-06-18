@@ -24,6 +24,43 @@ switch ($method) {
             while ($row = $stmt->fetch()) {
                 // MySQL JSON / TEXT column is decoded back to a PHP object for JSON output
                 $row['specs'] = json_decode($row['specs'], true);
+
+                // Auto-migrate base64 image in database to physical file on first load!
+                if (!empty($row['image']) && strpos($row['image'], 'data:image/') === 0) {
+                    try {
+                        if (!file_exists('uploads')) {
+                            mkdir('uploads', 0755, true);
+                        }
+                        preg_match('/^data:image\/(\w+);base64,/', $row['image'], $type_match);
+                        $ext = isset($type_match[1]) ? $type_match[1] : 'jpg';
+                        if ($ext === 'jpeg') $ext = 'jpg';
+
+                        $image_data = substr($row['image'], strpos($row['image'], ',') + 1);
+                        $image_data = base64_decode($image_data);
+
+                        if ($image_data !== false) {
+                            $filename = 'prod_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $row['id']) . '_' . time() . '.' . $ext;
+                            $filepath = 'uploads/' . $filename;
+                            file_put_contents($filepath, $image_data);
+
+                            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+                            $host = $_SERVER['HTTP_HOST'];
+                            $script_dir = dirname($_SERVER['SCRIPT_NAME']);
+                            $script_dir = str_replace('\\', '/', $script_dir);
+                            $script_dir = rtrim($script_dir, '/');
+                            $file_url = $protocol . $host . $script_dir . '/' . $filepath;
+
+                            // Update database record with the static file URL path
+                            $updateStmt = $conn->prepare("UPDATE products SET image = :image WHERE id = :id");
+                            $updateStmt->execute([':image' => $file_url, ':id' => $row['id']]);
+
+                            $row['image'] = $file_url;
+                        }
+                    } catch (Exception $ex) {
+                        // Ignore migration error
+                    }
+                }
+                
                 $products[] = $row;
             }
             
@@ -46,6 +83,37 @@ switch ($method) {
             http_response_code(400);
             echo json_encode(["status" => "error", "message" => "Invalid product data provided"]);
             exit();
+        }
+
+        // Process image: if it is base64, save it to file
+        if (!empty($input['image']) && strpos($input['image'], 'data:image/') === 0) {
+            try {
+                if (!file_exists('uploads')) {
+                    mkdir('uploads', 0755, true);
+                }
+                preg_match('/^data:image\/(\w+);base64,/', $input['image'], $type_match);
+                $ext = isset($type_match[1]) ? $type_match[1] : 'jpg';
+                if ($ext === 'jpeg') $ext = 'jpg';
+
+                $image_data = substr($input['image'], strpos($input['image'], ',') + 1);
+                $image_data = base64_decode($image_data);
+
+                if ($image_data !== false) {
+                    $filename = 'prod_' . preg_replace('/[^a-zA-Z0-9_-]/', '', $input['id']) . '_' . time() . '.' . $ext;
+                    $filepath = 'uploads/' . $filename;
+                    file_put_contents($filepath, $image_data);
+
+                    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+                    $host = $_SERVER['HTTP_HOST'];
+                    $script_dir = dirname($_SERVER['SCRIPT_NAME']);
+                    $script_dir = str_replace('\\', '/', $script_dir);
+                    $script_dir = rtrim($script_dir, '/');
+                    
+                    $input['image'] = $protocol . $host . $script_dir . '/' . $filepath;
+                }
+            } catch (Exception $ex) {
+                // Ignore upload image processing error
+            }
         }
         
         try {

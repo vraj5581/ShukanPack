@@ -3,6 +3,7 @@ import "../styles/pages.css"; // Base styles
 import "../styles/admin.css"; // Admin specific styles
 import { useNavigate } from "react-router-dom";
 import { API_BASE_URL, getHeaders } from "../apiConfig";
+import useSEO from "../hooks/useSEO";
 
 const parseInquiryMessage = (messageText) => {
   if (!messageText) return null;
@@ -44,6 +45,11 @@ const parseInquiryMessage = (messageText) => {
 };
 
 function Admin() {
+  useSEO({
+    title: "Admin Dashboard Portal | Shukan Packaging",
+    description: "Secure administrator dashboard for managing product catalogs, inquiries, and customer requests at Shukan Packaging.",
+    noindex: true,
+  });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [messages, setMessages] = useState([]);

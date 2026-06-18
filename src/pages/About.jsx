@@ -1,6 +1,12 @@
 import "../styles/pages.css";
+import useSEO from "../hooks/useSEO";
 
 function About() {
+  useSEO({
+    title: "About Us | Shukan Packaging - Morbi Custom Box Manufacturer",
+    description: "Learn about Shukan Packaging, a premier designer and manufacturer of custom corrugated boxes, packaging sheets, and custom packing supplies in Morbi, Gujarat since 2015.",
+    keywords: "about shukan packaging, box factory morbi, packaging manufacturer, custom corrugated sheets, gujarat corrugated box",
+  });
   return (
     <div className="page-wrapper">
       <div className="container">

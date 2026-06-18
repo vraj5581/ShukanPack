@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../styles/pages.css";
 import { API_BASE_URL, getHeaders } from "../apiConfig";
+import useSEO from "../hooks/useSEO";
 
 const getBriefSpecs = (specs) => {
   const formatVal = (str) => {
@@ -24,6 +25,11 @@ const getBriefSpecs = (specs) => {
 };
 
 function Products() {
+  useSEO({
+    title: "Custom Corrugated Products & Box Catalog | Shukan Packaging",
+    description: "Browse our premium custom packaging products including heavy-duty sanitaryware box sets, ventilated fresh fruit shippers, custom export shippers, and carton boxes.",
+    keywords: "sanitaryware box, Urinal carton box, wash basin box, export shipper box, Universal carton box, ventilated fruit box, custom packaging Morbi",
+  });
   const [filter, setFilter] = useState("all");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [inquiryProduct, setInquiryProduct] = useState(null);

@@ -1,8 +1,14 @@
 import { useState } from "react";
 import "../styles/pages.css";
 import { API_BASE_URL, getHeaders } from "../apiConfig";
+import useSEO from "../hooks/useSEO";
 
 function Contact() {
+  useSEO({
+    title: "Contact Us for Custom Packaging Quotes | Shukan Packaging",
+    description: "Contact Shukan Packaging in Morbi, Gujarat for pricing and quotes on custom corrugated boxes, packaging sheets, and specialty boxes. Call +91 9998725672.",
+    keywords: "contact shukan packaging, request quote, packaging pricing, morbi packaging factory, custom packaging quote",
+  });
   const [formData, setFormData] = useState({
     name: "",
     email: "",

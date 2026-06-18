@@ -1,8 +1,14 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import "../styles/pages.css";
+import useSEO from "../hooks/useSEO";
 
 function Services() {
+  useSEO({
+    title: "Packaging Design & Manufacturing Services | Shukan Packaging",
+    description: "Explore our premium packaging services including custom box design, eco-friendly materials, branding, prototyping, bulk production, and logistics solutions.",
+    keywords: "packaging design, bulk box production, eco-friendly packaging, package prototyping, logistics and supply, packaging finishing",
+  });
   const { hash } = useLocation();
 
   useEffect(() => {
