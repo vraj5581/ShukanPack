@@ -21,11 +21,19 @@ switch ($method) {
             $stmt->execute();
             
             $products = [];
+            
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+            $host = $_SERVER['HTTP_HOST'];
+            $script_dir = dirname($_SERVER['SCRIPT_NAME']);
+            $script_dir = str_replace('\\', '/', $script_dir);
+            $script_dir = rtrim($script_dir, '/');
+            $base_url = $protocol . $host . $script_dir . '/';
+
             while ($row = $stmt->fetch()) {
                 // MySQL JSON / TEXT column is decoded back to a PHP object for JSON output
                 $row['specs'] = json_decode($row['specs'], true);
 
-                // Auto-migrate base64 image in database to physical file on first load!
+                // 1. Auto-migrate base64 image in database to physical file on first load!
                 if (!empty($row['image']) && strpos($row['image'], 'data:image/') === 0) {
                     try {
                         if (!file_exists('uploads')) {
@@ -43,22 +51,36 @@ switch ($method) {
                             $filepath = 'uploads/' . $filename;
                             file_put_contents($filepath, $image_data);
 
-                            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-                            $host = $_SERVER['HTTP_HOST'];
-                            $script_dir = dirname($_SERVER['SCRIPT_NAME']);
-                            $script_dir = str_replace('\\', '/', $script_dir);
-                            $script_dir = rtrim($script_dir, '/');
-                            $file_url = $protocol . $host . $script_dir . '/' . $filepath;
-
-                            // Update database record with the static file URL path
+                            // Store relative path in database
+                            $db_path = $filepath;
                             $updateStmt = $conn->prepare("UPDATE products SET image = :image WHERE id = :id");
-                            $updateStmt->execute([':image' => $file_url, ':id' => $row['id']]);
+                            $updateStmt->execute([':image' => $db_path, ':id' => $row['id']]);
 
-                            $row['image'] = $file_url;
+                            $row['image'] = $db_path;
                         }
                     } catch (Exception $ex) {
                         // Ignore migration error
                     }
+                }
+
+                // 2. If it is already an absolute URL (e.g. from previous run with localhost), clean/migrate it to relative path in database
+                if (!empty($row['image']) && (strpos($row['image'], 'http://') === 0 || strpos($row['image'], 'https://') === 0)) {
+                    $uploads_pos = strpos($row['image'], '/uploads/');
+                    if ($uploads_pos !== false) {
+                        $relative_path = substr($row['image'], $uploads_pos + 1);
+                        try {
+                            $updateStmt = $conn->prepare("UPDATE products SET image = :image WHERE id = :id");
+                            $updateStmt->execute([':image' => $relative_path, ':id' => $row['id']]);
+                            $row['image'] = $relative_path;
+                        } catch (Exception $ex) {
+                            // Ignore
+                        }
+                    }
+                }
+
+                // 3. Convert relative path to dynamic absolute URL for the JSON response
+                if (!empty($row['image']) && strpos($row['image'], 'uploads/') === 0) {
+                    $row['image'] = $base_url . $row['image'];
                 }
                 
                 $products[] = $row;
@@ -103,16 +125,17 @@ switch ($method) {
                     $filepath = 'uploads/' . $filename;
                     file_put_contents($filepath, $image_data);
 
-                    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-                    $host = $_SERVER['HTTP_HOST'];
-                    $script_dir = dirname($_SERVER['SCRIPT_NAME']);
-                    $script_dir = str_replace('\\', '/', $script_dir);
-                    $script_dir = rtrim($script_dir, '/');
-                    
-                    $input['image'] = $protocol . $host . $script_dir . '/' . $filepath;
+                    // Save relative path in database
+                    $input['image'] = $filepath;
                 }
             } catch (Exception $ex) {
                 // Ignore upload image processing error
+            }
+        } elseif (!empty($input['image']) && (strpos($input['image'], 'http://') === 0 || strpos($input['image'], 'https://') === 0)) {
+            // Clean absolute URL to relative path for database storage
+            $uploads_pos = strpos($input['image'], '/uploads/');
+            if ($uploads_pos !== false) {
+                $input['image'] = substr($input['image'], $uploads_pos + 1);
             }
         }
         
@@ -140,18 +163,32 @@ switch ($method) {
                           VALUES (:id, :title, :category, :image, :shortDesc, :longDesc, :specs, :sort_order)";
             }
             
+            $db_image_path = $input['image'] ?? '';
+
             $stmt = $conn->prepare($query);
             $stmt->execute([
                 ':id' => $input['id'],
                 ':title' => $input['title'],
                 ':category' => $input['category'],
-                ':image' => $input['image'] ?? '',
+                ':image' => $db_image_path,
                 ':shortDesc' => $input['shortDesc'] ?? '',
                 ':longDesc' => $input['longDesc'] ?? '',
                 ':specs' => json_encode($input['specs'] ?? new stdClass()),
                 ':sort_order' => $input['sort_order'] ?? 0
             ]);
             
+            // Build response absolute URL dynamically
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+            $host = $_SERVER['HTTP_HOST'];
+            $script_dir = dirname($_SERVER['SCRIPT_NAME']);
+            $script_dir = str_replace('\\', '/', $script_dir);
+            $script_dir = rtrim($script_dir, '/');
+            $base_url = $protocol . $host . $script_dir . '/';
+
+            if (!empty($input['image']) && strpos($input['image'], 'uploads/') === 0) {
+                $input['image'] = $base_url . $input['image'];
+            }
+
             http_response_code(200);
             echo json_encode([
                 "status" => "success", 

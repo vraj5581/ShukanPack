@@ -50,7 +50,7 @@
   font-size: 22px;
   font-weight: 800;
   font-family: var(--font-heading);
-  color: #ffffff;
+  color: var(--primary-color);
   letter-spacing: -0.02em;
   transition: color var(--transition-speed) ease;
 }
@@ -71,7 +71,7 @@
   display: none;
   background: none;
   border: none;
-  color: #fff;
+  color: var(--primary-color);
   cursor: pointer;
 }
 
@@ -91,7 +91,7 @@
 }
 
 .nav-links a {
-  color: #d1d5db;
+  color: var(--text-light);
   font-weight: 500;
   position: relative;
   font-size: 15px;
@@ -99,7 +99,7 @@
 
 .nav-links a:hover,
 .nav-links a.active {
-  color: #fff;
+  color: var(--primary-color);
 }
 
 .navbar.scrolled .nav-links a {

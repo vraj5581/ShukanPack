@@ -399,6 +399,11 @@ function BackgroundAnimation() {
   const kraftTexture = useMemo(() => createProceduralTexture("kraft"), []);
   const premiumTexture = useMemo(() => createProceduralTexture("premium"), []);
 
+  // Performance & Rendering optimizations
+  const [renderCanvas, setRenderCanvas] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const containerRef = useRef(null);
+
   // Responsive state
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" ? window.innerWidth < 768 : false
@@ -410,6 +415,33 @@ function BackgroundAnimation() {
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    // 1. Delay canvas rendering to allow initial page paints to complete instantly
+    const mountTimer = setTimeout(() => {
+      setRenderCanvas(true);
+    }, 100);
+
+    // 2. Pause WebGL frame loop when canvas scrolls out of viewport to conserve CPU/GPU
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.02 }
+    );
+
+    const currentContainer = containerRef.current;
+    if (currentContainer) {
+      observer.observe(currentContainer);
+    }
+
+    return () => {
+      clearTimeout(mountTimer);
+      if (currentContainer) {
+        observer.unobserve(currentContainer);
+      }
+    };
   }, []);
 
   // Dynamic box position coordinates based on device screen size
@@ -436,6 +468,7 @@ function BackgroundAnimation() {
 
   return (
     <div
+      ref={containerRef}
       style={{
         position: "fixed",
         top: 0,
@@ -449,73 +482,85 @@ function BackgroundAnimation() {
       }}
     >
       {/* Opacity wrapper (32%) to prevent blocking text/content while maintaining visibility */}
-      <div style={{ width: "100%", height: "100%", opacity: 0.32 }}>
-        <Canvas camera={{ position: [0, 0, 10], fov: 50 }}>
-          {/* Quality lighting for shadows and specular highlights */}
-          <ambientLight intensity={1.1} />
-          <directionalLight position={[10, 15, 10]} intensity={1.4} />
-          <directionalLight position={[-10, -5, -10]} intensity={0.5} />
-          
-          {/* Glowing specular point lights next to the boxes for high-fidelity highlights */}
-          <pointLight position={light1Pos} color="#c59b6c" intensity={4} distance={isMobile ? 4 : 6} decay={1.5} />
-          <pointLight position={light2Pos} color="#0076a8" intensity={5} distance={isMobile ? 4 : 6} decay={1.5} />
-          <pointLight position={light3Pos} color="#0a2d54" intensity={3} distance={isMobile ? 4 : 5} decay={1.5} />
-          <pointLight position={light4Pos} color="#c59b6c" intensity={4} distance={isMobile ? 4 : 5} decay={1.5} />
+      <div 
+        style={{ 
+          width: "100%", 
+          height: "100%", 
+          opacity: renderCanvas ? 0.32 : 0,
+          transition: "opacity 0.8s ease" 
+        }}
+      >
+        {renderCanvas && (
+          <Canvas 
+            camera={{ position: [0, 0, 10], fov: 50 }}
+            frameloop={isVisible ? "always" : "never"}
+          >
+            {/* Quality lighting for shadows and specular highlights */}
+            <ambientLight intensity={1.1} />
+            <directionalLight position={[10, 15, 10]} intensity={1.4} />
+            <directionalLight position={[-10, -5, -10]} intensity={0.5} />
+            
+            {/* Glowing specular point lights next to the boxes for high-fidelity highlights */}
+            <pointLight position={light1Pos} color="#c59b6c" intensity={4} distance={isMobile ? 4 : 6} decay={1.5} />
+            <pointLight position={light2Pos} color="#0076a8" intensity={5} distance={isMobile ? 4 : 6} decay={1.5} />
+            <pointLight position={light3Pos} color="#0a2d54" intensity={3} distance={isMobile ? 4 : 5} decay={1.5} />
+            <pointLight position={light4Pos} color="#c59b6c" intensity={4} distance={isMobile ? 4 : 5} decay={1.5} />
 
-          {/* Subtle grid base */}
-          <BlueprintGrid />
+            {/* Subtle grid base */}
+            <BlueprintGrid />
 
-          {/* 1. Far Left - Large Cardboard Box with folding flaps and tape */}
-          <RealisticShippingBox
-            position={box1Pos}
-            scale={box1Scale}
-            w={1.9}
-            h={1.6}
-            d={1.9}
-            texture={kraftTexture}
-            timeOffset={0}
-          />
+            {/* 1. Far Left - Large Cardboard Box with folding flaps and tape */}
+            <RealisticShippingBox
+              position={box1Pos}
+              scale={box1Scale}
+              w={1.9}
+              h={1.6}
+              d={1.9}
+              texture={kraftTexture}
+              timeOffset={0}
+            />
 
-          {/* 2. Far Right - Premium Custom Product Box */}
-          <PremiumProductBox
-            position={box2Pos}
-            scale={box2Scale}
-            size={[1.6, 2.3, 1.2]}
-            texture={premiumTexture}
-            timeOffset={4.5}
-          />
+            {/* 2. Far Right - Premium Custom Product Box */}
+            <PremiumProductBox
+              position={box2Pos}
+              scale={box2Scale}
+              size={[1.6, 2.3, 1.2]}
+              texture={premiumTexture}
+              timeOffset={4.5}
+            />
 
-          {/* 3. Bottom Far-Left Background - Gift Box with blue ribbons */}
-          <GiftCrateBox
-            position={box3Pos}
-            scale={box3Scale}
-            size={[1.4, 1.2, 1.4]}
-            color="#c59b6c"
-            ribbonColor="#0a2d54"
-            timeOffset={2}
-          />
+            {/* 3. Bottom Far-Left Background - Gift Box with blue ribbons */}
+            <GiftCrateBox
+              position={box3Pos}
+              scale={box3Scale}
+              size={[1.4, 1.2, 1.4]}
+              color="#c59b6c"
+              ribbonColor="#0a2d54"
+              timeOffset={2}
+            />
 
-          {/* 4. Top Far-Right Background - Mailing Tube (tube packaging) */}
-          <MailingTube
-            position={box4Pos}
-            scale={box4Scale}
-            r={0.32}
-            h={2.8}
-            texture={kraftTexture}
-            timeOffset={7.5}
-          />
+            {/* 4. Top Far-Right Background - Mailing Tube (tube packaging) */}
+            <MailingTube
+              position={box4Pos}
+              scale={box4Scale}
+              r={0.32}
+              h={2.8}
+              texture={kraftTexture}
+              timeOffset={7.5}
+            />
 
-          {/* 5. Left-skewed Background Box (Keeps Center Clear) */}
-          <RealisticShippingBox
-            position={box5Pos}
-            scale={box5Scale}
-            w={1.2}
-            h={1.0}
-            d={1.2}
-            texture={kraftTexture}
-            timeOffset={11}
-          />
-        </Canvas>
+            {/* 5. Left-skewed Background Box (Keeps Center Clear) */}
+            <RealisticShippingBox
+              position={box5Pos}
+              scale={box5Scale}
+              w={1.2}
+              h={1.0}
+              d={1.2}
+              texture={kraftTexture}
+              timeOffset={11}
+            />
+          </Canvas>
+        )}
       </div>
     </div>
   );

@@ -515,7 +515,10 @@ function Admin() {
 
     // 2. Fetch messages (requires auth token)
     fetch(`${API_BASE_URL}/inquiries.php`, {
-      headers: { Authorization: authToken },
+      headers: { 
+        Authorization: authToken,
+        "X-Authorization": authToken 
+      },
     })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch messages");
@@ -537,7 +540,10 @@ function Admin() {
     if (auth) {
       // Validate token by fetching inquiries
       fetch(`${API_BASE_URL}/inquiries.php`, {
-        headers: { Authorization: auth },
+        headers: { 
+          Authorization: auth,
+          "X-Authorization": auth 
+        },
       })
         .then((res) => {
           if (res.ok) {
@@ -563,7 +569,10 @@ function Admin() {
     setIsLoading(true);
 
     fetch(`${API_BASE_URL}/inquiries.php`, {
-      headers: { Authorization: password },
+      headers: { 
+        Authorization: password,
+        "X-Authorization": password 
+      },
     })
       .then((res) => {
         if (res.ok) {
@@ -950,7 +959,7 @@ function Admin() {
                     </tr>
                   </thead>
                   <tbody>
-                    {messages.slice(0, 5).map((msg) => {
+                    {messages.slice(0, 3).map((msg) => {
                       const isQuote =
                         msg.message &&
                         msg.message.includes("Product Quote Request:");

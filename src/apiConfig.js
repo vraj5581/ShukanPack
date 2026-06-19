@@ -38,6 +38,7 @@ export const getHeaders = (requireAuth = false) => {
   
   if (requireAuth) {
     headers["Authorization"] = getAuthToken();
+    headers["X-Authorization"] = getAuthToken(); // Fallback for Apache FastCGI authorization stripping
   }
   
   return headers;

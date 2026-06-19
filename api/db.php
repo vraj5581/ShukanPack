@@ -1,7 +1,7 @@
 <?php
 // Enable CORS so your local React development server can access the PHP backend
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Authorization");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, PATCH, OPTIONS");
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 // Database Credentials
 // NOTE: Change these to match your hosting database settings
-$host = "localhost";
+$host = "127.0.0.1";
 $db_name = "shukanpack_db";
 $username = "root";
 $password = "";
@@ -34,17 +34,23 @@ try {
 function check_admin_auth() {
     $auth = '';
     
-    // Attempt to extract the Authorization header
-    if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+    // Attempt to extract the Authorization / X-Authorization header
+    if (isset($_SERVER['HTTP_X_AUTHORIZATION'])) {
+        $auth = $_SERVER['HTTP_X_AUTHORIZATION'];
+    } elseif (isset($_SERVER['HTTP_AUTHORIZATION'])) {
         $auth = $_SERVER['HTTP_AUTHORIZATION'];
     } elseif (function_exists('getallheaders')) {
         $headers = getallheaders();
-        if (isset($headers['Authorization'])) {
+        if (isset($headers['X-Authorization'])) {
+            $auth = $headers['X-Authorization'];
+        } elseif (isset($headers['Authorization'])) {
             $auth = $headers['Authorization'];
         }
     } elseif (function_exists('apache_request_headers')) {
         $headers = apache_request_headers();
-        if (isset($headers['Authorization'])) {
+        if (isset($headers['X-Authorization'])) {
+            $auth = $headers['X-Authorization'];
+        } elseif (isset($headers['Authorization'])) {
             $auth = $headers['Authorization'];
         }
     }
